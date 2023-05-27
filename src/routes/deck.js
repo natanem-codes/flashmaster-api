@@ -18,8 +18,6 @@ router.route("/")
                 _id, title, author, createdAt, updatedAt, flashcardsCount: deck.flashcards.length
             })
         }
-
-        console.log(decksArr)
         res.send(decksArr)
     } catch (error) {
         res.status(400).send()
@@ -79,11 +77,16 @@ router.post("/:id/copy", verify, async(req, res) => {
 })
 router.post("/:id/addToFavorites", verify, async(req, res) => {
     const {id} = req.params
-    console.log("deck to be added to favorites: ",id)
+    console.log("deck to be added to favorites: ", id)
+    console.log(req.user.favorites)
     try {
-        req.user.favorites.push(id)
+        if(req.user.favorites.includes(id)) {
+            req.user.favorites = req.user.favorites.filter(fav => fav != id)
+        }else {
+            req.user.favorites.push(id)
+        }
         await req.user.save()
-        res.send(req.user)
+        res.send(req.user.favorites)
     } catch (error) {
         console.log(error.message)
         res.status(400).send({error: error.message})
@@ -101,7 +104,7 @@ router.route("/:id")
         res.send(deck)
     } catch (error) {
         console.log(error.message)
-         res.status(400).send()
+        res.status(400).send()
     }
 })
 

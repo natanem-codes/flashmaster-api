@@ -8,8 +8,6 @@ const router = Router()
 router.route("/")
 .get(async (req, res) => {
     const {deckId} = req.query
-    console.log(req.query)
-    console.log(req.body)
     try {
         const flashcards = await Flashcard.find({deck: deckId})
     res.send(flashcards)
@@ -44,7 +42,6 @@ router.route("/:id")
     }
 })
 .patch(verify, async(req, res) => {
-    console.log("updating..")
     const {id} = req.params
     try {
         const updatedFlashcard = await Flashcard.findByIdAndUpdate(id, req.body, {new: true})
@@ -58,7 +55,6 @@ router.route("/:id")
 })
 .delete(verify, async(req, res) => {
     const {id} = req.params
-    console.log("deleting... ", id)
     try {
         const deletedFlashcard = await Flashcard.findByIdAndDelete(id)
         if(!deletedFlashcard) {

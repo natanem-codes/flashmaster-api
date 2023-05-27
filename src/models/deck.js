@@ -31,6 +31,9 @@ deckSchema.virtual("flashcards", {
     foreignField: "deck"
 })
 
+// deckSchema.pre("deleteOne", function(){
+//     console.log("deleteing deckkkk", this)
+// })
 
 const Deck = model("Deck", deckSchema)
 

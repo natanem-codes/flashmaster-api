@@ -12,12 +12,13 @@ router.post("/login", async(req, res) => {
     try {
         const foundUser = await User.findByUsername(username, password)
         const token = await foundUser.generateToken()
-
+        // res.send(foundUser)
         res.send({
                 _id: foundUser._id,
-                firstname: foundUser.firstName,
+                firstName: foundUser.firstName,
                 lastName: foundUser.lastName,
                 username: foundUser.username,
+                favorites: foundUser.favorites,
                 token
             })
     } catch (error) {
@@ -41,8 +42,9 @@ router.post("/register", async(req, res) => {
         
         res.status(201).send({
                 _id: newUser._id,
-                firstname: newUser.firstName,
+                firstName: newUser.firstName,
                 lastName: newUser.lastName,
+                favorites: newUser.favorites,
                 username: newUser.username,
                 token
             })

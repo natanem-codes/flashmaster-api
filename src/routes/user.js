@@ -1,15 +1,15 @@
 
 const { Router } = require("express")
-const bcrypt = require("bcrypt")
-const jwt = require("jsonwebtoken")
 
 const verify = require("../middlewares/auth")
 const User = require("../models/user")
+const Deck = require("../models/deck")
+const Flashcard = require("../models/flashcard")
 
 
 const router = Router()
 
-router.patch("", verify, async(req, res ) => {
+router.patch("/:id", verify, async(req, res ) => {
    console.log(req.body)
    console.log(req.user)
     try {
@@ -24,11 +24,17 @@ router.patch("", verify, async(req, res ) => {
     }
 })
 
-router.delete("", verify, async(req, res ) => {
+router.delete("/:id", verify, async(req, res ) => {
+    console.log("deleting")
     try {
-        const deletedUser = await User.findByIdAndDelete({_id: req.user._id}).select("-password")
+        const deletedUser = await User.deleteOne({_id: req.user._id}).select("-password")
         if(!deletedUser) {
             return res.status(404).send()
+        }
+        const decksFromUser = await Deck.find(({author: req.user._id}))
+        for(let deck of decksFromUser) {
+            await deck.deleteOne()
+            await Flashcard.deleteMany({deck: deck._id})
         }
         
         res.send(deletedUser)

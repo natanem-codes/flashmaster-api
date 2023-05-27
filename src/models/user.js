@@ -1,6 +1,7 @@
 const {Schema, model} = require("mongoose")
 const bcrypt = require("bcrypt")
 const jwt = require("jsonwebtoken")
+const Deck = require("./deck")
 
 const userSchema = new Schema({
     firstName: {
@@ -32,6 +33,13 @@ userSchema.pre("save", async function (next) {
     }
     next()
 })
+
+// userSchema.pre("deleteOne", async function (next) {
+//     const id = this.getFilter()["_id"]
+//     console.log("deleting...", id)
+//     await Deck.deleteMany({author: id})
+//     next()
+// })
 
 userSchema.statics.findByUsername = async (username, password) => {
     const user = await User.findOne({username})
